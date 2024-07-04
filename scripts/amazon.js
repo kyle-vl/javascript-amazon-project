@@ -1,4 +1,4 @@
-import {cart} from '../data/cart.js';
+import {cart, addToCart} from '../data/cart.js';
 import {products} from '../data/products.js';
 
 let productsHTML = '';
@@ -63,6 +63,35 @@ document.getElementById('js-products-grid')
 
 const addedMessageTimeouts = {};  
 
+function updateCartQuantity() {
+  let cartQuantity = 0;
+
+  cart.forEach((cartItem) => {
+    cartQuantity += cartItem.quantity;
+  });
+
+  cartQuantityElement.textContent = cartQuantity;
+}
+
+function renderAddMessage(productId) {
+  const addedMessage = document.querySelector(
+    `#js-added-to-cart-${productId}`
+  );
+
+  addedMessage.classList.add('added-to-cart-visible');
+  
+  const previousTimeoutId = addedMessageTimeouts[productId];
+  if (previousTimeoutId) {
+    clearTimeout(previousTimeoutId);
+  }
+
+  const timeoutId = setTimeout(() => {
+    addedMessage.classList.remove('added-to-cart-visible');
+  }, 2000);
+
+  addedMessageTimeouts[productId] = timeoutId;
+}
+
 document.querySelectorAll('#js-add-to-cart')
   .forEach((button) => {
     button.addEventListener('click', () => {
@@ -70,44 +99,8 @@ document.querySelectorAll('#js-add-to-cart')
       const quantity = Number(document.
         querySelector(`#js-quantity-selector-${productId}`).value);
       
-      const addedMessage = document.querySelector(
-        `#js-added-to-cart-${productId}`
-      );
-      
-      addedMessage.classList.add('added-to-cart-visible');
-
-      const previousTimeoutId = addedMessageTimeouts[productId];
-      if (previousTimeoutId) {
-        clearTimeout(previousTimeoutId);
-      }
-
-      const timeoutId = setTimeout(() => {
-        addedMessage.classList.remove('added-to-cart-visible');
-      }, 2000);
-
-      addedMessageTimeouts[productId] = timeoutId;
-
-      let matchingItem;
-
-      cart.forEach((item) => {
-        if (productId === item.productId) {
-          matchingItem = item;
-        }
-      });
-
-      if (matchingItem) {
-        matchingItem.quantity += quantity;
-      } else {
-        cart.push({ productId, quantity });
-      }
-
-      let cartQuantity = 0;
-
-      cart.forEach((item) => {
-        cartQuantity += item.quantity;
-      })
-
-      console.log(cart);
-      cartQuantityElement.textContent = cartQuantity;
+      addToCart(productId, quantity);
+      updateCartQuantity();
+      renderAddMessage(productId);
     });
   });
