@@ -7,6 +7,7 @@ import {deliveryOptions} from '../data/deliveryOptions.js';
 
 
 function renderOrderSummary() {
+  updateCartQuantity();
   let cartSummaryHTML = '';
 
   cart.forEach((cartItem) => {
@@ -193,8 +194,6 @@ function renderOrderSummary() {
     });
   });
 
-  
-
   document.querySelectorAll('.js-delivery-option')
     .forEach((element) => {
       element.addEventListener('click', () => {
@@ -203,13 +202,13 @@ function renderOrderSummary() {
         renderOrderSummary();
       });
     });
-}
 
-function updateCartQuantity() {
+  function updateCartQuantity() {
   document.getElementById('js-return-to-home-link')
     .textContent = `${calculateCartQuantity()} items`;
+  }
 }
 
 renderOrderSummary();
-updateCartQuantity();
+
 
