@@ -4,11 +4,11 @@ import {formatCurrency} from '../utils/money.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import {deliveryOptions, getDeliveryOption} from '../../data/deliveryOptions.js';
 import {renderPaymentSummary} from './paymentSummary.js';
-import {updateCartQuantity} from './checkoutHeader.js';
+import {renderCheckoutHeader} from './checkoutHeader.js';
 import {calculateDeliveryDate} from '../../data/deliveryOptions.js';
 
 export function renderOrderSummary() {
-  updateCartQuantity();
+  renderCheckoutHeader();
   let cartSummaryHTML = '';
 
   cart.forEach((cartItem) => {
@@ -118,7 +118,7 @@ export function renderOrderSummary() {
         removeFromCart(productId);
 
         renderOrderSummary();
-        updateCartQuantity();
+        renderCheckoutHeader();
         renderPaymentSummary();
       });
     })
@@ -148,9 +148,6 @@ export function renderOrderSummary() {
       const quantityInputElement = document.querySelector(`
         #js-quantity-input-${productId}
         `);
-      const quantityTextElement = document.querySelector(`
-        #js-quantity-label-${productId}
-        `);
 
       const newQuantity = Number(quantityInputElement.value);
       if (newQuantity < 0 || newQuantity >= 1000) {
@@ -159,9 +156,9 @@ export function renderOrderSummary() {
       }
 
       quantityInputElement.value = '';
-      quantityTextElement.textContent = `${newQuantity}`;
       updateQuantity(productId, newQuantity);
-      updateCartQuantity();
+      renderOrderSummary();
+      renderCheckoutHeader();
       renderPaymentSummary();
     });
   });
