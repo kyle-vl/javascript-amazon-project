@@ -1,10 +1,5 @@
 import {calculateCartQuantity} from "../../data/cart.js";
 
-export function updateCartQuantity() {
-  document.getElementById('js-return-to-home-link')
-    .textContent = `${calculateCartQuantity()} items`;
-}
-
 export function renderCheckoutHeader() {
   const cartQuantity = calculateCartQuantity();
   const checkoutHeaderHTML = `
