@@ -3,6 +3,9 @@ import {orders} from "../data/orders.js";
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import formatCurrency from './utils/money.js';
 import {getProduct} from '../../data/products.js';
+import {cart} from '../data/cart.js';
+
+loadPage();
 
 async function loadPage() {
   await loadProducts();
@@ -39,6 +42,25 @@ async function loadPage() {
 
   document.getElementById('js-orders-grid')
     .innerHTML = ordersHTML;
+
+  document.querySelectorAll('.js-buy-again')
+    .forEach((button) => {
+      button.addEventListener('click', () => {
+        const productQuantity = Number(button.dataset.productQuantity);
+        console.log(typeof (productQuantity));
+        cart.addToCart(button.dataset.productId, 
+          productQuantity);
+        updateCartQuantity();
+
+        button.innerHTML = 'Added!';
+        setTimeout(() => {
+          button.innerHTML = `
+            <img class="buy-again-icon" src="images/icons/buy-again.png">
+            <span class="buy-again-message">Buy it again</span>
+          `;
+        }, 1000);
+      })
+    })
 }
 
 function orderedProductHTML(order) {
@@ -63,9 +85,12 @@ function orderedProductHTML(order) {
         <div class="product-quantity">
           Quantity: ${productDetails.quantity}
         </div>
-        <button class="buy-again-button button-primary">
+        <button class="buy-again-button button-primary js-buy-again"
+          data-product-id="${product.id}"
+          data-product-quantity="${productDetails.quantity}">
           <img class="buy-again-icon" src="images/icons/buy-again.png">
-          <span class="buy-again-message">Buy it again</span>
+          <span class="buy-again-message"
+          >Buy it again</span>
         </button>
       </div>
       <div class="product-actions">
@@ -81,5 +106,12 @@ function orderedProductHTML(order) {
   return orderedProductsHTML;
 }
 
-loadPage();
+updateCartQuantity();
+
+function updateCartQuantity() {
+  const cartQuantityElement = document.
+    getElementById('js-cart-quantity');
+  cartQuantityElement.textContent = cart.calculateCartQuantity();
+}
+
 

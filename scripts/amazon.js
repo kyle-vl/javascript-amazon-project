@@ -69,17 +69,18 @@ function renderProductsGrid() {
         Add to Cart
       </button>
     </div>`;
-
   })
-  const cartQuantityElement = document.getElementById('js-cart-quantity');
-  updateCartQuantity();
 
+  updateCartQuantity();
+  
   document.getElementById('js-products-grid')
     .innerHTML = productsHTML;
 
   const addedMessageTimeouts = {};  
 
   function updateCartQuantity() {
+    const cartQuantityElement = document.
+      getElementById('js-cart-quantity');
     cartQuantityElement.textContent = cart.calculateCartQuantity();
   }
 
