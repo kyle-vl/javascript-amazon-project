@@ -4,13 +4,19 @@ import {loadProducts, loadProductsFetch} from '../data/products.js';
 import {cart} from '../data/cart.js';
 
 async function loadPage() {
-  await loadProductsFetch();
+  try {
+    await loadProductsFetch();
 
-  await new Promise((resolve) => {
-    cart.loadCart(() => {
-      resolve();
+    await new Promise((resolve, reject) => {
+      // throw('throw sync erorr');
+      cart.loadCart(() => {
+        // reject('throw async error');
+        resolve();
+      });
     });
-  });
+  } catch (error) {
+    console.log('Unexpected error. Please try again later.');
+  }
 
   renderOrderSummary();
   renderPaymentSummary();
