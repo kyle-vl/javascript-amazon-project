@@ -1,7 +1,17 @@
 import {cart} from "../data/cart.js";
 import {products, loadProducts} from '../data/products.js';
 
-loadProducts(renderProductsGrid);
+async function loadPage() {
+  try {
+    await loadProducts();
+  } catch (error) {
+    console.log('Unexpected error. Please try again later.');
+  }
+
+  renderProductsGrid();
+}
+
+loadPage();
 
 function renderProductsGrid() {
   let productsHTML = '';
